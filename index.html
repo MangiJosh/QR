@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savory & Co. - Menu</title>
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/svgs/solid/utensils.svg" type="image/svg+xml">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #e9ecef;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #333;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu-section {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .menu-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: block;
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover .menu-item-image {
+            transform: scale(1.05);
+        }
+
+        .menu-item-content {
+            padding: 1.5rem;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .menu-item-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-left: 1rem;
+        }
+
+        .menu-item-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .menu-item-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .add-to-cart-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.15);
+            cursor: pointer;
+            z-index: 2;
+            transition: background 0.2s;
+        }
+        .add-to-cart-btn:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .nav-tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .menu-item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .menu-item-price {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-section {
+                padding: 1rem;
+            }
+
+            .menu-item-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Add to <style> section */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 90vw;
+            width: 400px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s;
+        }
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95vw;
+                padding: 1rem;
+            }
+        }
+
+        /* Ensure .add-to-cart-btn is in every .menu-item */
+        #modal-confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #modal-confirm:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 1200;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 2rem;
+            box-shadow: 0 4px 16px rgba(102,126,234,0.15);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s, background 0.2s;
+        }
+        #back-to-top:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>Savory & Co.</h1>
+                <p>Authentic flavors, fresh ingredients, memorable experiences</p>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('breakfast', this)">Breakfast</button>
+            <button class="nav-tab" onclick="showSection('lunch', this)">Lunch</button>
+            <button class="nav-tab" onclick="showSection('burgers', this)">Burgers</button>
+            <button class="nav-tab" onclick="showSection('drinks', this)">Drinks</button>
+            <button class="nav-tab" onclick="showSection('desserts', this)">Desserts</button>
+        </nav>
+
+        <section id="breakfast" class="menu-section active">
+            <h2 class="section-title">Breakfast</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Avocado Toast" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Avocado Toast Deluxe</h3>
+                            <span class="menu-item-price">R 85</span>
+                        </div>
+                        <p class="menu-item-description">Smashed avocado on artisan sourdough with poached eggs, cherry tomatoes, and microgreens</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Vegetarian</span>
+                            <span class="tag">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/357743/pexels-photo-357743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Pancakes" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Fluffy Buttermilk Pancakes</h3>
+                            <span class="menu-item-price">R 75</span>
+                        </div>
+                        <p class="menu-item-description">Stack of three fluffy pancakes served with maple syrup, fresh berries, and whipped cream</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Sweet</span>
+                            <span class="tag">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/101533/pexels-photo-101533.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Full English Breakfast" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Full English Breakfast</h3>
+                            <span class="menu-item-price">R 125</span>
+                        </div>
+                        <p class="menu-item-description">Two eggs, bacon, sausages, grilled tomatoes, mushrooms, baked beans, and toast</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Hearty</span>
+                            <span class="tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Omelette" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Mediterranean Omelette</h3>
+                            <span class="menu-item-price">R 95</span>
+                        </div>
+                        <p class="menu-item-description">Three-egg omelette with feta cheese, olives, sun-dried tomatoes, and fresh herbs</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Vegetarian</span>
+                            <span class="tag">Mediterranean</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="French Toast" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Classic French Toast</h3>
+                            <span class="menu-item-price">R 80</span>
+                        </div>
+                        <p class="menu-item-description">Brioche bread dipped in cinnamon-vanilla egg batter, grilled and served with syrup and fresh fruit</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Sweet</span>
+                            <span class="tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Breakfast Wrap" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Breakfast Wrap</h3>
+                            <span class="menu-item-price">R 90</span>
+                        </div>
+                        <p class="menu-item-description">Scrambled eggs, grilled peppers, cheddar cheese, and salsa wrapped in a warm tortilla</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Hearty</span>
+                            <span class="tag">On-the-go</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lunch" class="menu-section">
+            <h2 class="section-title">Lunch</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Caesar Salad" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Grilled Chicken Caesar</h3>
+                            <span class="menu-item-price">R 145</span>
+                        </div>
+                        <p class="menu-item-description">Crisp romaine lettuce, grilled chicken, parmesan, croutons, and classic caesar dressing</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Protein</span>
+                            <span class="tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Pasta" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Penne Arrabbiata</h3>
+                            <span class="menu-item-price">R 135</span>
+                        </div>
+                        <p class="menu-item-description">Penne pasta in spicy tomato sauce with garlic, chili flakes, and fresh basil</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Spicy</span>
+                            <span class="tag">Italian</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/361184/asparagus-steak-veal-steak-veal-361184.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Steak" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Grilled Ribeye Steak</h3>
+                            <span class="menu-item-price">R 285</span>
+                        </div>
+                        <p class="menu-item-description">250g ribeye steak with roasted vegetables, garlic mashed potatoes, and red wine jus</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Premium</span>
+                            <span class="tag">Grilled</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1516415/pexels-photo-1516415.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fish" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Pan-Seared Salmon</h3>
+                            <span class="menu-item-price">R 195</span>
+                        </div>
+                        <p class="menu-item-description">Fresh salmon fillet with lemon butter sauce, quinoa pilaf, and steamed asparagus</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Healthy</span>
+                            <span class="tag">Omega-3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Chicken Wrap" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Chicken & Veggie Wrap</h3>
+                            <span class="menu-item-price">R 120</span>
+                        </div>
+                        <p class="menu-item-description">Grilled chicken, mixed veggies, and hummus in a whole wheat wrap</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Healthy</span>
+                            <span class="tag">Wrap</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Soup" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Seasonal Soup & Bread</h3>
+                            <span class="menu-item-price">R 85</span>
+                        </div>
+                        <p class="menu-item-description">Chef's choice soup served with artisan bread and butter</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Vegetarian</span>
+                            <span class="tag">Comfort</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="burgers" class="menu-section">
+            <h2 class="section-title">Burgers</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Classic Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Classic Beef Burger</h3>
+                            <span class="menu-item-price">R 115</span>
+                        </div>
+                        <p class="menu-item-description">200g beef patty, lettuce, tomato, onion, pickles, and our signature sauce on a brioche bun</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Classic</span>
+                            <span class="tag">Beef</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1556909/pexels-photo-1556909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Bacon Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Bacon BBQ Deluxe</h3>
+                            <span class="menu-item-price">R 145</span>
+                        </div>
+                        <p class="menu-item-description">Double beef patty, crispy bacon, cheddar cheese, BBQ sauce, and onion rings</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Double</span>
+                            <span class="tag">BBQ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1603901/pexels-photo-1603901.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Chicken Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Crispy Chicken Burger</h3>
+                            <span class="menu-item-price">R 125</span>
+                        </div>
+                        <p class="menu-item-description">Crispy fried chicken breast, coleslaw, spicy mayo, and pickles on a sesame bun</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Chicken</span>
+                            <span class="tag">Crispy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1893556/pexels-photo-1893556.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Veggie Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Plant-Based Burger</h3>
+                            <span class="menu-item-price">R 105</span>
+                        </div>
+                        <p class="menu-item-description">Beyond meat patty, avocado, sprouts, tomato, and vegan aioli on a whole wheat bun</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Vegan</span>
+                            <span class="tag">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Mushroom Swiss Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Mushroom Swiss Burger</h3>
+                            <span class="menu-item-price">R 135</span>
+                        </div>
+                        <p class="menu-item-description">Beef patty, sautéed mushrooms, Swiss cheese, lettuce, and garlic aioli</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Beef</span>
+                            <span class="tag">Cheesy</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Spicy Bean Burger" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Spicy Bean Burger</h3>
+                            <span class="menu-item-price">R 110</span>
+                        </div>
+                        <p class="menu-item-description">Homemade spicy bean patty, lettuce, tomato, and chipotle mayo on a sesame bun</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Vegetarian</span>
+                            <span class="tag">Spicy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="drinks" class="menu-section">
+            <h2 class="section-title">Drinks</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Coffee" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Artisan Coffee</h3>
+                            <span class="menu-item-price">R 35</span>
+                        </div>
+                        <p class="menu-item-description">Freshly roasted single-origin coffee beans, expertly brewed to perfection</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Hot</span>
+                            <span class="tag">Caffeine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1120575/pexels-photo-1120575.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Smoothie" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Tropical Smoothie</h3>
+                            <span class="menu-item-price">R 55</span>
+                        </div>
+                        <p class="menu-item-description">Mango, pineapple, banana, coconut milk, and a touch of lime</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Fresh</span>
+                            <span class="tag">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fresh Juice" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Fresh Orange Juice</h3>
+                            <span class="menu-item-price">R 45</span>
+                        </div>
+                        <p class="menu-item-description">Freshly squeezed Valencia oranges, served chilled with pulp or without</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Fresh</span>
+                            <span class="tag">Vitamin C</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1633525/pexels-photo-1633525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Iced Tea" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Iced Rooibos Tea</h3>
+                            <span class="menu-item-price">R 25</span>
+                        </div>
+                        <p class="menu-item-description">Local rooibos tea served cold with fresh mint and a slice of lemon</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Local</span>
+                            <span class="tag">Refreshing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/767465/pexels-photo-767465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Berry Lemonade" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Berry Lemonade</h3>
+                            <span class="menu-item-price">R 40</span>
+                        </div>
+                        <p class="menu-item-description">Fresh lemonade blended with mixed berries and mint</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Refreshing</span>
+                            <span class="tag">Fruity</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Hot Chocolate" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Classic Hot Chocolate</h3>
+                            <span class="menu-item-price">R 35</span>
+                        </div>
+                        <p class="menu-item-description">Rich cocoa, steamed milk, topped with whipped cream and chocolate shavings</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Hot</span>
+                            <span class="tag">Chocolate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="desserts" class="menu-section">
+            <h2 class="section-title">Desserts</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Chocolate Cake" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Decadent Chocolate Cake</h3>
+                            <span class="menu-item-price">R 65</span>
+                        </div>
+                        <p class="menu-item-description">Rich chocolate layer cake with Belgian chocolate ganache and fresh berries</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Chocolate</span>
+                            <span class="tag">Indulgent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Ice Cream" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Artisan Ice Cream</h3>
+                            <span class="menu-item-price">R 45</span>
+                        </div>
+                        <p class="menu-item-description">Three scoops of house-made ice cream with your choice of toppings</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Cold</span>
+                            <span class="tag">House-made</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/806363/pexels-photo-806363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Cheesecake" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">New York Cheesecake</h3>
+                            <span class="menu-item-price">R 55</span>
+                        </div>
+                        <p class="menu-item-description">Classic creamy cheesecake with graham cracker crust and berry compote</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Creamy</span>
+                            <span class="tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461431/pexels-photo-461431.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Tiramisu" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Traditional Tiramisu</h3>
+                            <span class="menu-item-price">R 75</span>
+                        </div>
+                        <p class="menu-item-description">Coffee-soaked ladyfingers layered with mascarpone cream and dusted with cocoa</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Italian</span>
+                            <span class="tag">Coffee</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Fruit Tart" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Seasonal Fruit Tart</h3>
+                            <span class="menu-item-price">R 60</span>
+                        </div>
+                        <p class="menu-item-description">Buttery tart shell filled with vanilla custard and topped with fresh seasonal fruit</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Fruity</span>
+                            <span class="tag">Fresh</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="add-to-cart-btn" title="Add to Cart" aria-label="Add to Cart">+</button>
+                    <img src="https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Lemon Meringue" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-name">Lemon Meringue Pie</h3>
+                            <span class="menu-item-price">R 55</span>
+                        </div>
+                        <p class="menu-item-description">Tangy lemon curd in a crisp crust, topped with toasted meringue</p>
+                        <div class="menu-item-tags">
+                            <span class="tag">Tangy</span>
+                            <span class="tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2025 Savory & Co. | Follow us on social media for daily specials</p>
+        </footer>
+    </div>
+
+    <button id="back-to-top" title="Back to Top" aria-label="Back to Top">^</button>
+
+    <script>
+    // Make showSection globally accessible
+    function showSection(sectionId, tabElement) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.menu-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.nav-tab');
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Add active class to clicked tab
+        if (tabElement) {
+            tabElement.classList.add('active');
+        }
+
+        // Smooth scroll to top of menu section
+        document.querySelector('.nav-tabs').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+
+    // Only code that needs to wait for DOMContentLoaded goes here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add loading animation to menu items
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.6s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Add hover effect to images
+        menuItems.forEach(item => {
+            const img = item.querySelector('.menu-item-image');
+            item.addEventListener('mouseenter', () => {
+                img.style.transform = 'scale(1.05)';
+            });
+            item.addEventListener('mouseleave', () => {
+                img.style.transform = 'scale(1)';
+            });
+        });
+    });
+
+    // Add keyboard navigation (this can be global)
+    document.addEventListener('keydown', function(e) {
+        const tabs = document.querySelectorAll('.nav-tab');
+        const activeTab = document.querySelector('.nav-tab.active');
+        const currentIndex = Array.from(tabs).indexOf(activeTab);
+
+        if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+            const nextTab = tabs[currentIndex + 1];
+            const sectionId = nextTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+            showSection(sectionId, nextTab);
+        } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+            const prevTab = tabs[currentIndex - 1];
+            const sectionId = prevTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+            showSection(sectionId, prevTab);
+        }
+    });
+
+    // Back to Top button logic
+    const backToTopBtn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 200) {
+            backToTopBtn.style.display = 'flex';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    </script>
+</body>
+</html>
